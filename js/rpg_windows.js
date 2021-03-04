@@ -1558,6 +1558,7 @@ Window_Gold.prototype.open = function() {
 // The window for selecting a command on the menu screen.
 
 function Window_MenuCommand() {
+	$gameTemp.reserveCommonEvent(12);
     this.initialize.apply(this, arguments);
 }
 

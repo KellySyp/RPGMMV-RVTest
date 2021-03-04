@@ -10,6 +10,10 @@ var Yanfly = Yanfly || {};
 Yanfly.EventSpawn = Yanfly.EventSpawn || {};
 Yanfly.EventSpawn.version = 1.02;
 
+//KMS
+var fishingEvents = [];
+var maxFish = 3;
+
 //=============================================================================
  /*:
  * @plugindesc v1.02 Spawn premade events at specific locations or random
@@ -457,6 +461,27 @@ Yanfly.SpawnEventInRegion = function(mapId, eventId, regions, preserved) {
   Yanfly.SpawnEvent(mapId, eventId, random[0], random[1], preserved);
 };
 
+//KMS
+Yanfly.TrackFish = function(eventId) {
+	fishingEvents.push(eventId);
+	if(fishingEvents[0]) Yanfly.DespawnEventID(fishingEvents[0]);
+	if(fishingEvents.length > maxFish){
+		fishingEvents.shift();
+	}
+	//console.log(fishingEvents);
+};
+Yanfly.unTrackFish = function(eventId) {
+	fishingEvents.splice(fishingEvents.indexOf(eventId), 1);
+	Yanfly.DespawnEventID(eventId);
+	//console.log(fishingEvents);
+};
+Yanfly.changeMaxFish = function(fish) {
+	maxFish = fish
+};
+Yanfly.clearFish = function() {
+	fishingEvents = [];
+};
+
 Yanfly.SpawnEventTemplate = function(template, x, y, preserved) {
   var str = template.toUpperCase();
   if (Yanfly.EventSpawn.Template[str]) {
@@ -517,6 +542,23 @@ Yanfly.ClearSpawnedEvents = function(mapId) {
       Yanfly.DespawnEventID(eventId);
     } else {
       data[eventId - Yanfly.Param.EventSpawnerID] = null;
+    }
+  }
+};
+
+//KMS New function
+Yanfly.CloneSpawnedEvents = function(mapId) {
+  mapId = mapId || $gameMap.mapId();
+  var data = $gameSystem.getMapSpawnedEventData(mapId);
+  var length = data.length;
+  for (var i = 1; i < length; ++i) {
+    var eventData = data[i];
+	if (!eventData) continue;
+    var eventId = parseInt(eventData._spawnData.eventId);
+    if (mapId === $gameMap.mapId()) {
+      Yanfly.DespawnEventID(eventId);
+    } else {
+		Yanfly.SpawnEventAt(Yanfly.Param.EventSpawnerData[0], eventId, eventData.x, eventData.y, true);
     }
   }
 };

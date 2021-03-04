@@ -142,7 +142,6 @@ Game_Player.prototype.checkNoLandVehicleRegionID = function(x, y, d) {
 //=============================================================================
 
 Game_Player.prototype.canEncounter = function() {
-
     if (eval(Karberus.LandBoat.Encounters) === false) {
     return (!$gameParty.hasEncounterNone() && $gameSystem.isEncounterEnabled() &&
             !this.isInAirship() && !this.isInBoat() && !this.isMoveRouteForcing() && !this.isDebugThrough());
